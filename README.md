@@ -32,12 +32,15 @@ claude --plugin-dir ./plugins/aws-dev-toolkit
 | `aws-debug` | Auto | Debug AWS deployment failures, Lambda errors, permission issues |
 | `cost-check` | Auto | Analyze and optimize AWS costs |
 | `security-review` | Auto | Audit IaC and AWS configs for security issues |
+| `bedrock-cost` | Auto | Bedrock pricing, token economics, and cost modeling |
 
 **Sub-Agents:**
 | Agent | Model | Description |
 |---|---|---|
 | `aws-explorer` | Haiku | Read-only AWS environment exploration and context gathering |
 | `iac-reviewer` | Sonnet | Reviews IaC changes for correctness, security, and best practices |
+| `bedrock-sme` | Sonnet | Bedrock subject matter expert emphasizing cost-efficient usage patterns |
+| `agentcore-sme` | Sonnet | AgentCore expert for PoC-to-production agent development with DeepEval and Langfuse guidance |
 
 **MCP Servers:**
 | Server | Package | Description |
@@ -73,10 +76,13 @@ sup-virtual-sa/
 │       │   ├── iac-scaffold/
 │       │   ├── aws-debug/
 │       │   ├── cost-check/
-│       │   └── security-review/
+│       │   ├── security-review/
+│       │   └── bedrock-cost/
 │       ├── agents/               # Sub-agents
 │       │   ├── aws-explorer.md
-│       │   └── iac-reviewer.md
+│       │   ├── iac-reviewer.md
+│       │   ├── bedrock-sme.md
+│       │   └── agentcore-sme.md
 │       └── hooks/
 │           └── hooks.json
 └── README.md
