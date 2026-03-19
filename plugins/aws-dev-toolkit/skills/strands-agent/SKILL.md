@@ -22,7 +22,9 @@ Default to TypeScript if the user doesn't have a preference.
 3. Identify the tools the agent needs (keep to 3-5 for a PoC)
 4. Decide on memory needs: no memory, STM only, or STM+LTM
 5. Scaffold the project using the patterns in [references/](references/)
-6. Include deployment instructions using the AgentCore CLI
+6. Include observability setup (OTel tracing is built in — just configure the endpoint)
+7. Include an eval scaffold using Strands Evals (even for TS agents, evals are Python)
+8. Include deployment instructions using the AgentCore CLI
 
 ## Quick PoC Path: AgentCore CLI
 
@@ -72,6 +74,37 @@ pip install strands-agents bedrock-agentcore
 
 See [references/python-patterns.md](references/python-patterns.md) for complete Python agent patterns.
 
+## Observability & Tracing
+
+Strands has OpenTelemetry built in. Every agent invocation, model call, and tool execution emits OTel spans automatically. You just configure where to send them.
+
+- **AgentCore deployed agents**: OTel is enabled by default → CloudWatch Logs, X-Ray traces, GenAI dashboard
+- **Local development**: Set `OTEL_EXPORTER_OTLP_ENDPOINT` to route to Jaeger, Grafana, Langfuse, etc.
+- **Disable**: `agentcore configure --disable-otel`
+
+See [references/agentcore-integrations.md](references/agentcore-integrations.md) for full setup, third-party backends, and trace attribute configuration.
+
+## Evaluation with Strands Evals
+
+Ship evals from day one. Strands Evals provides LLM-as-a-Judge evaluation with 9+ built-in evaluators:
+
+- **OutputEvaluator**: Custom rubric-based quality scoring
+- **TrajectoryEvaluator**: Did the agent use the right tools in the right order?
+- **HelpfulnessEvaluator**: 7-point helpfulness scale
+- **FaithfulnessEvaluator**: Is the response grounded in context? (anti-hallucination)
+- **HarmfulnessEvaluator**: Safety check
+- **ToolSelectionAccuracyEvaluator** / **ToolParameterAccuracyEvaluator**: Tool-level correctness
+- **GoalSuccessRateEvaluator**: Did the user achieve their goal across a full session?
+- **ActorSimulator**: Simulates realistic multi-turn users for conversation testing
+
+```bash
+pip install strands-agents-evals
+```
+
+> Evals are Python-only. Even for TypeScript agents, write your eval suite in Python.
+
+See [references/agentcore-integrations.md](references/agentcore-integrations.md) for eval code patterns, trace-based evaluation, multi-turn simulation, and auto-generated test cases.
+
 ## Memory Decision Guide
 
 | Scenario | Memory Mode | Notes |
@@ -94,12 +127,18 @@ Memory is opt-in. Start without it, add when you need it.
 - **`agentcore destroy` deletes everything** — including memory resources. Use `--dry-run` first.
 - **Session lifecycle** — idle timeout defaults to 900s (15min). Set `--idle-timeout` and `--max-lifetime` during configure if you need longer sessions.
 - **VPC config is immutable** — once deployed with VPC settings, you can't change them. Create a new agent config instead.
+- **OTel is on by default in AgentCore** — traces go to CloudWatch/X-Ray. Disable with `--disable-otel` if you don't want it.
+- **Strands Evals is Python-only** — even for TypeScript agents, write evals in Python. The eval framework uses the same Bedrock models as your agent.
+- **Evals cost money** — each LLM-as-a-Judge evaluation invokes a model. Use `callback_handler=None` in eval task functions to suppress console output.
+- **Memory batching requires close()** — if using `batch_size > 1`, you MUST use a `with` block or call `close()` or buffered messages are lost.
 
 ## Output
 
 When scaffolding a new agent project, generate:
 1. Complete project structure with all files
 2. Agent entrypoint with at least one custom tool
-3. README with setup and deployment instructions
-4. `.gitignore` appropriate for the language
-5. Deployment commands (local dev + AgentCore cloud)
+3. Observability setup (OTel endpoint config, env vars)
+4. Eval scaffold (`evals/` directory with at least one test case using Strands Evals — Python, even for TS agents)
+5. README with setup, deployment, observability, and eval instructions
+6. `.gitignore` appropriate for the language
+7. Deployment commands (local dev + AgentCore cloud)
