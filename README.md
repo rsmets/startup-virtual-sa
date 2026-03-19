@@ -1,93 +1,113 @@
 # sup-virtual-sa
 
+A Claude Code plugin marketplace for AWS development. Ships skills, sub-agents, MCP servers, and hooks that help you build well-architected applications on AWS.
 
+## Quick Start
 
-## Getting started
+```bash
+# Add the marketplace
+/plugin marketplace add <your-git-url>
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.aws.dev/rsmets/sup-virtual-sa.git
-git branch -M main
-git push -uf origin main
+# Install the AWS dev toolkit
+/plugin install aws-dev-toolkit@sup-virtual-sa
 ```
 
-## Integrate with your tools
+Or test locally during development:
 
-- [ ] [Set up project integrations](https://gitlab.aws.dev/rsmets/sup-virtual-sa/-/settings/integrations)
+```bash
+claude --plugin-dir ./plugins/aws-dev-toolkit
+```
 
-## Collaborate with your team
+## What's Included
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### Plugins
 
-## Test and Deploy
+#### `aws-dev-toolkit`
 
-Use the built-in continuous integration in GitLab.
+**Skills:**
+| Skill | Trigger | Description |
+|---|---|---|
+| `aws-architect` | Auto | Design & review AWS architectures against Well-Architected Framework |
+| `iac-scaffold` | `/iac-scaffold <framework> <description>` | Scaffold CDK, Terraform, SAM, or CloudFormation projects |
+| `aws-debug` | Auto | Debug AWS deployment failures, Lambda errors, permission issues |
+| `cost-check` | Auto | Analyze and optimize AWS costs |
+| `security-review` | Auto | Audit IaC and AWS configs for security issues |
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**Sub-Agents:**
+| Agent | Model | Description |
+|---|---|---|
+| `aws-explorer` | Haiku | Read-only AWS environment exploration and context gathering |
+| `iac-reviewer` | Sonnet | Reviews IaC changes for correctness, security, and best practices |
 
-***
+**MCP Servers:**
+| Server | Package | Description |
+|---|---|---|
+| `aws-iac` | `awslabs.aws-iac-mcp-server` | CDK/Terraform/CloudFormation development with security scanning |
+| `aws-docs` | `awslabs.aws-documentation-mcp-server` | Latest AWS documentation and code samples |
+| `aws-core` | `awslabs.core-mcp-server` | Proxy server that dynamically imports other AWS MCP servers |
+| `aws-cost` | `awslabs.cost-analysis-mcp-server` | Cost analysis and optimization |
 
-# Editing this README
+**Hooks:**
+- Post-edit reminder to validate IaC files before deploying
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## Prerequisites
 
-## Suggestions for a good README
+- [Claude Code](https://code.claude.com) v1.0.33+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (for MCP servers via `uvx`)
+- AWS CLI configured with appropriate credentials
+- (Optional) `checkov`, `cfn-nag`, `tfsec` for security scanning
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## Project Structure
 
-## Name
-Choose a self-explaining name for your project.
+```
+sup-virtual-sa/
+├── .claude-plugin/
+│   └── marketplace.json          # Marketplace catalog
+├── plugins/
+│   └── aws-dev-toolkit/          # First plugin
+│       ├── .claude-plugin/
+│       │   └── plugin.json       # Plugin manifest
+│       ├── .mcp.json             # MCP server configs
+│       ├── skills/               # Agent skills
+│       │   ├── aws-architect/
+│       │   ├── iac-scaffold/
+│       │   ├── aws-debug/
+│       │   ├── cost-check/
+│       │   └── security-review/
+│       ├── agents/               # Sub-agents
+│       │   ├── aws-explorer.md
+│       │   └── iac-reviewer.md
+│       └── hooks/
+│           └── hooks.json
+└── README.md
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Adding More Plugins
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+This marketplace is designed to host multiple plugins. To add a new one:
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+1. Create a directory under `plugins/<your-plugin-name>/`
+2. Add `.claude-plugin/plugin.json` with the manifest
+3. Add your skills, agents, hooks, and MCP configs
+4. Register it in `.claude-plugin/marketplace.json`
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Available AWS MCP Servers
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+The [awslabs/mcp](https://awslabs.github.io/mcp/servers) project provides 60+ official MCP servers. Some notable ones to consider adding:
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+| Server | Use Case |
+|---|---|
+| `awslabs.aws-api-mcp-server` | Direct AWS API access via CLI |
+| `awslabs.cdk-mcp-server` | CDK-specific development |
+| `awslabs.terraform-mcp-server` | Terraform-specific workflows |
+| `awslabs.lambda-mcp-server` | Lambda function management |
+| `awslabs.s3-mcp-server` | S3 operations |
+| `awslabs.cloudformation-mcp-server` | CloudFormation resource management |
+| `awslabs.bedrock-mcp-server` | Bedrock AI model integration |
+| `awslabs.cloudwatch-mcp-server` | Metrics, alarms, and log analysis |
+| `awslabs.iam-mcp-server` | IAM user, role, and policy management |
+| `awslabs.well-architected-mcp-server` | Well-Architected Framework reviews |
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT

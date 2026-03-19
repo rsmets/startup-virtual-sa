@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A file was just written or edited. If it's an IaC file (*.tf, *.tfvars, template.yaml, template.yml, *-stack.ts, *-stack.py, *.template.json), remind the user to validate it before deploying. For Terraform: `terraform validate && terraform plan`. For CDK: `cdk synth && cdk diff`. For SAM/CFN: `sam validate` or `aws cloudformation validate-template`. $ARGUMENTS"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "sup-virtual-sa",
+  "owner": {
+    "name": "rsmets",
+    "email": ""
+  },
+  "metadata": {
+    "description": "A curated marketplace of Claude Code plugins for AWS development — skills, sub-agents, MCP servers, and hooks for building on AWS.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "aws-dev-toolkit",
+      "source": "./plugins/aws-dev-toolkit",
+      "description": "AWS development toolkit with skills, agents, MCP servers, and hooks for building well-architected infrastructure and applications on AWS.",
+      "version": "0.1.0",
+      "author": {
+        "name": "rsmets"
+      },
+      "keywords": ["aws", "infrastructure", "cdk", "cloudformation", "terraform", "serverless", "well-architected"],
+      "category": "cloud-development"
+    }
+  ]
+}
