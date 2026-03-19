@@ -6,7 +6,7 @@ A Claude Code plugin marketplace for AWS development. Ships skills, sub-agents, 
 
 ```bash
 # Add the marketplace
-/plugin marketplace add <your-git-url>
+/plugin marketplace add https://github.com/rsmets/startup-virtual-sa
 
 # Install the AWS dev toolkit
 /plugin install aws-dev-toolkit@sup-virtual-sa
@@ -141,6 +141,7 @@ Hooks run automatically on events. Currently configured:
 | `aws-debug` | Auto | Debug AWS deployment failures, Lambda errors, permission issues |
 | `cost-check` | Auto | Analyze and optimize AWS costs |
 | `security-review` | Auto | Audit IaC and AWS configs for security issues |
+| `strands-agent` | `/strands-agent <description>` | Scaffold Strands Agents SDK projects on Bedrock AgentCore (TS/Python) |
 | `bedrock-cost` | Auto | Bedrock pricing, token economics, and cost modeling |
 
 **Sub-Agents:**
