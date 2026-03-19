@@ -18,6 +18,115 @@ Or test locally during development:
 claude --plugin-dir ./plugins/aws-dev-toolkit
 ```
 
+## Usage
+
+Once installed, the plugin's skills, agents, and MCP servers are available automatically in Claude Code. Here's how each piece works:
+
+### Skills (Automatic)
+
+Skills activate automatically based on context — no special commands needed. Just ask naturally:
+
+```
+"Review this architecture for Well-Architected best practices"  → aws-architect
+"Why is my CloudFormation stack failing?"                       → aws-debug
+"How much is this infrastructure costing me?"                   → cost-check
+"Are there security issues in my Terraform?"                    → security-review
+"Estimate Bedrock costs for 50k daily invocations"              → bedrock-cost
+```
+
+The one exception is `iac-scaffold`, which uses a slash command:
+
+```
+/iac-scaffold terraform "VPC with public/private subnets and NAT"
+/iac-scaffold cdk "Serverless API with Lambda and DynamoDB"
+```
+
+### Sub-Agents (Automatic)
+
+Sub-agents are spun up automatically when Claude determines a specialist is needed. You can also invoke them directly:
+
+```
+"Explore my AWS environment and summarize what's deployed"      → aws-explorer
+"Review my IaC changes before I deploy"                         → iac-reviewer
+"Help me pick the right Bedrock model for classification"       → bedrock-sme
+"I have a PoC agent, help me productionize it"                  → agentcore-sme
+```
+
+### MCP Servers
+
+The plugin references several AWS MCP servers. In Kiro, MCP configs are not auto-loaded from the plugin directory — you need to add them to your Kiro MCP settings.
+
+Add to `~/.kiro/settings/mcp.json` (user-level) or `.kiro/settings/mcp.json` (workspace-level):
+
+```jsonc
+{
+  "mcpServers": {
+    // AWS IaC validation and security scanning
+    "aws-iac": {
+      "command": "uvx",
+      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR" },
+      "disabled": false
+    },
+    // AWS documentation search
+    "aws-docs": {
+      "command": "uvx",
+      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR" },
+      "disabled": false
+    },
+    // Core AWS resource access
+    "aws-core": {
+      "command": "uvx",
+      "args": ["awslabs.core-mcp-server@latest"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_PROFILE": "default" },
+      "disabled": false
+    },
+    // Cost analysis
+    "aws-cost": {
+      "command": "uvx",
+      "args": ["awslabs.cost-analysis-mcp-server@latest"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_PROFILE": "default" },
+      "disabled": false
+    }
+  }
+}
+```
+
+These are used behind the scenes by skills and agents — you don't need to invoke them directly.
+
+| Server | Package | Description |
+|---|---|---|
+| `aws-iac` | `awslabs.aws-iac-mcp-server` | CDK/Terraform/CloudFormation development with security scanning |
+| `aws-docs` | `awslabs.aws-documentation-mcp-server` | Latest AWS documentation and code samples |
+| `aws-core` | `awslabs.core-mcp-server` | Proxy server that dynamically imports other AWS MCP servers |
+| `aws-cost` | `awslabs.cost-analysis-mcp-server` | Cost analysis and optimization |
+
+### Hooks
+
+Hooks run automatically on events. Currently configured:
+
+- After editing an IaC file (`.tf`, `template.yaml`, `*-stack.ts`, etc.), Claude reminds you to validate before deploying
+
+### Example Workflows
+
+**"I need a new service on AWS"**
+1. Describe what you're building — `aws-architect` kicks in with a design
+2. Ask to scaffold it — `/iac-scaffold cdk "your description"`
+3. Edit the generated code — the hook reminds you to `cdk synth && cdk diff`
+4. Ask for a security review before deploying
+
+**"My Bedrock agent is too expensive"**
+1. Ask about your Bedrock usage — `bedrock-sme` analyzes your patterns
+2. Get model selection guidance — it'll steer you toward the cheapest model that works
+3. Ask `cost-check` to look at your overall AWS bill for context
+
+**"I built a PoC agent, now what?"**
+1. Share your agent code — `agentcore-sme` reviews it against the production checklist
+2. Get guidance on adding DeepEval for model evaluation
+3. Choose between AgentCore native observability or Langfuse
+4. Walk through the PoC → production migration path
+
 ## What's Included
 
 ### Plugins
