@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_aws-dev-toolkit_aws-docs__search_documentation",
+      "mcp__plugin_aws-dev-toolkit_aws-docs__read_sections"
+    ]
+  }
+}
