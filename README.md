@@ -88,6 +88,13 @@ Add to `~/.kiro/settings/mcp.json` (user-level) or `.kiro/settings/mcp.json` (wo
       "args": ["awslabs.cost-analysis-mcp-server@latest"],
       "env": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_PROFILE": "default" },
       "disabled": false
+    },
+    // Well-Architected Framework reviews
+    "aws-well-architected": {
+      "command": "uvx",
+      "args": ["awslabs.well-architected-mcp-server@latest"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_PROFILE": "default" },
+      "disabled": false
     }
   }
 }
@@ -167,6 +174,7 @@ Hooks run automatically on events. Currently configured:
 | `gcp-to-aws` | Auto | GCP to AWS migration service mapping, gotchas, and environment assessment |
 | `azure-to-aws` | Auto | Azure to AWS migration service mapping, gotchas, and environment assessment |
 | `customer-ideation` | Auto | Guided ideation from concept to AWS architecture with Well-Architected review |
+| `well-architected` | Auto | Formal Well-Architected Framework reviews with pillar-by-pillar assessment |
 
 **Sub-Agents:**
 | Agent | Model | Description |
@@ -175,6 +183,7 @@ Hooks run automatically on events. Currently configured:
 | `iac-reviewer` | Sonnet | Reviews IaC changes for correctness, security, and best practices |
 | `bedrock-sme` | Sonnet | Bedrock subject matter expert emphasizing cost-efficient usage patterns |
 | `agentcore-sme` | Sonnet | AgentCore expert for PoC-to-production agent development with DeepEval and Langfuse guidance |
+| `well-architected-reviewer` | Opus | Deep Well-Architected Framework reviews with evidence-based assessment commands |
 
 **MCP Servers:**
 | Server | Package | Description |
@@ -183,6 +192,7 @@ Hooks run automatically on events. Currently configured:
 | `aws-docs` | `awslabs.aws-documentation-mcp-server` | Latest AWS documentation and code samples |
 | `aws-core` | `awslabs.core-mcp-server` | Proxy server that dynamically imports other AWS MCP servers |
 | `aws-cost` | `awslabs.cost-analysis-mcp-server` | Cost analysis and optimization |
+| `aws-well-architected` | `awslabs.well-architected-mcp-server` | Well-Architected Tool API for reviews, lenses, and improvement plans |
 
 **Hooks:**
 - Post-edit reminder to validate IaC files before deploying
@@ -214,7 +224,8 @@ sup-virtual-sa/
 │       │   ├── bedrock-cost/
 │       │   ├── gcp-to-aws/
 │       │   ├── azure-to-aws/
-│       │   └── customer-ideation/
+│       │   ├── customer-ideation/
+│       │   └── well-architected/
 │       ├── agents/               # Sub-agents
 │       │   ├── aws-explorer.md
 │       │   ├── iac-reviewer.md
