@@ -6,7 +6,7 @@ A Claude Code plugin marketplace for AWS development. Ships skills, sub-agents, 
 
 ```bash
 # Add the marketplace
-/plugin marketplace add https://github.com/rsmets/startup-virtual-sa
+/plugin marketplace add rsmets/startup-virtual-sa
 
 # Install the AWS dev toolkit
 /plugin install aws-dev-toolkit@sup-virtual-sa
