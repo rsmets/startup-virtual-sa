@@ -41,7 +41,11 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) format for all 
 
 ### Version Bumping — Required on Every Change
 
-**Every change to the plugin must include a version bump** in `plugins/aws-dev-toolkit/.claude-plugin/plugin.json`. This is the single source of truth for the plugin (and marketplace) version. Use [semver](https://semver.org/):
+**Every change to the plugin must include a version bump** in **both** files:
+- `plugins/aws-dev-toolkit/.claude-plugin/plugin.json` — the plugin version
+- `.claude-plugin/marketplace.json` — the marketplace version (both the top-level `metadata.version` and the plugin entry `version`)
+
+All three version fields must stay in sync. Use [semver](https://semver.org/):
 
 | Change type | Bump | Example |
 |-------------|------|---------|
