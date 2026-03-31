@@ -39,6 +39,22 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) format for all 
 - Every SKILL.md must have YAML frontmatter with `name` and `description`
 - Every agent .md must have YAML frontmatter with `name`, `description`, and `tools`
 
+### Version Bumping — Required on Every Change
+
+**Every change to the plugin must include a version bump** in `plugins/aws-dev-toolkit/.claude-plugin/plugin.json`. This is the single source of truth for the plugin (and marketplace) version. Use [semver](https://semver.org/):
+
+| Change type | Bump | Example |
+|-------------|------|---------|
+| Breaking changes (removed skills, renamed agents, changed hook behavior, incompatible config) | **Major** | `0.4.1` → `1.0.0` |
+| New skills, agents, MCP servers, or meaningful capability additions | **Minor** | `0.4.1` → `0.5.0` |
+| Bug fixes, doc updates, wording tweaks, config corrections | **Patch** | `0.4.1` → `0.4.2` |
+
+**Rules:**
+- Bump the version in the same commit as the change — never defer it
+- When multiple changes land in one commit, use the highest applicable bump level
+- Include the version bump in the commit message (e.g., `feat: add lambda skill (v0.5.0)`)
+- Pre-1.0 (`0.x.y`): minor bumps may include breaking changes per semver convention
+
 ## Security Review — Mandatory for IaC Changes
 
 **Any time IaC changes are proposed or written** (CloudFormation, CDK, Terraform, SAM, Pulumi, or raw AWS CLI/SDK scripts that create/modify infrastructure), the `security-review` skill or `iac-reviewer` subagent **MUST** be invoked before the work is considered complete. This is not optional.
