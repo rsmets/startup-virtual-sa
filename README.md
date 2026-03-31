@@ -18,6 +18,8 @@ Or test locally during development:
 claude --plugin-dir ./plugins/aws-dev-toolkit
 ```
 
+> **Note**: `--plugin-dir` loads the plugin from disk at **session start**. File changes are picked up on the next session — not live. `/plugin update` does not work for local plugins (it requires a marketplace source). Restart Claude Code to pick up changes. See [Plugins Guide](https://code.claude.com/docs/en/plugins) for details.
+
 ## Usage
 
 Once installed, the plugin's skills, agents, and MCP servers are available automatically in Claude Code. Here's how each piece works:
