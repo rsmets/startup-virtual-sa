@@ -1,6 +1,6 @@
 # sup-virtual-sa
 
-A Claude Code plugin marketplace for AWS development. Ships skills, sub-agents, MCP servers, and hooks that help you build well-architected applications on AWS.
+A Claude Code plugin marketplace for AWS development. Ships 30 skills, 11 sub-agents, 5 MCP servers, and hooks that help you build well-architected applications on AWS.
 
 ## Quick Start
 
@@ -32,13 +32,22 @@ Skills activate automatically based on context — no special commands needed. J
 "How much is this infrastructure costing me?"                   → cost-check
 "Are there security issues in my Terraform?"                    → security-review
 "Estimate Bedrock costs for 50k daily invocations"              → bedrock-cost
+"I want to build a serverless API for processing images"        → aws-plan
+"Compare ECS vs EKS for my workload"                            → aws-compare
+"Show me a diagram of this architecture"                        → aws-diagram
+"We're moving from GCP to AWS"                                  → aws-migrate
 ```
 
-The one exception is `iac-scaffold`, which uses a slash command:
+### Slash Commands
+
+Some skills are invoked explicitly via slash commands:
 
 ```
-/iac-scaffold terraform "VPC with public/private subnets and NAT"
-/iac-scaffold cdk "Serverless API with Lambda and DynamoDB"
+/aws-dev-toolkit:iac-scaffold terraform "VPC with public/private subnets and NAT"
+/aws-dev-toolkit:iac-scaffold cdk "Serverless API with Lambda and DynamoDB"
+/aws-dev-toolkit:aws-health-check us-east-1
+/aws-dev-toolkit:aws-diagram from-iac
+/aws-dev-toolkit:aws-migrate gcp
 ```
 
 ### Sub-Agents (Automatic)
@@ -123,10 +132,25 @@ Hooks run automatically on events. Currently configured:
 ### Example Workflows
 
 **"I need a new service on AWS"**
-1. Describe what you're building — `aws-architect` kicks in with a design
-2. Ask to scaffold it — `/iac-scaffold cdk "your description"`
-3. Edit the generated code — the hook reminds you to `cdk synth && cdk diff`
-4. Ask for a security review before deploying
+1. Describe what you're building — `aws-plan` kicks in automatically
+2. Answer 3-5 discovery questions (it won't overwhelm you)
+3. Review the proposed architecture, security findings, and cost estimate
+4. Scaffold it — `/iac-scaffold cdk "your description"`
+5. Edit the generated code — the hook reminds you to `cdk synth && cdk diff`
+
+**"Should I use Lambda or Fargate?"**
+1. Describe your workload — `aws-compare` evaluates both side-by-side
+2. Get a comparison table across cost, complexity, performance, and team fit
+3. Receive an opinionated recommendation tied to your constraints
+
+**"What does this architecture look like?"**
+1. Ask for a diagram — `/aws-diagram from-iac` reverse-engineers your IaC files
+2. Or describe the architecture — it generates Mermaid + ASCII diagrams
+
+**"Is my AWS account in good shape?"**
+1. Run `/aws-health-check us-east-1`
+2. Get a quick score with critical findings, warnings, and quick wins
+3. See SCP recommendations if baseline guardrails are missing
 
 **"My Bedrock agent is too expensive"**
 1. Ask about your Bedrock usage — `bedrock-sme` analyzes your patterns
@@ -173,19 +197,28 @@ Hooks run automatically on events. Currently configured:
 
 #### `aws-dev-toolkit`
 
-**Skills (25):**
+**Skills (30):**
 | Skill | Trigger | Description |
 |---|---|---|
+| **Workflows & Planning** | | |
+| `aws-plan` | Auto | End-to-end architecture planning — discovery, design, security review, cost estimate |
 | `aws-architect` | Auto | Design & review AWS architectures against Well-Architected Framework |
 | `well-architected` | Auto | Formal Well-Architected Framework reviews with pillar-by-pillar assessment |
 | `customer-ideation` | Auto | Guided ideation from concept to AWS architecture with service selection |
-| `iac-scaffold` | `/iac-scaffold <framework> <description>` | Scaffold CDK, Terraform, SAM, or CloudFormation projects |
+| `aws-compare` | Auto | Compare 2-3 architecture options side-by-side across cost, complexity, and trade-offs |
+| `aws-diagram` | Auto / `/aws-diagram` | Generate Mermaid/ASCII architecture diagrams from descriptions or existing IaC |
+| `aws-health-check` | `/aws-health-check [region]` | Quick account health scan — security, cost waste, reliability gaps |
+| `aws-migrate` | Auto | Guided migration assessment — discover source, map services, plan waves, estimate cost |
+| **Scaffolding** | | |
+| `iac-scaffold` | `/iac-scaffold <framework> <desc>` | Scaffold CDK, Terraform, SAM, or CloudFormation projects |
+| `strands-agent` | `/strands-agent <description>` | Scaffold Strands Agents SDK projects on Bedrock AgentCore (TS/Python) |
+| **Debugging & Review** | | |
 | `aws-debug` | Auto | Debug AWS deployment failures, Lambda errors, permission issues |
-| `security-review` | Auto | Audit IaC and AWS configs for security issues |
+| `security-review` | Auto | Audit IaC and AWS configs for security issues (mandatory for all IaC changes) |
 | `cost-check` | Auto | Analyze and optimize AWS costs |
 | `bedrock-cost` | Auto | Bedrock pricing, token economics, and cost modeling |
-| `strands-agent` | `/strands-agent <description>` | Scaffold Strands Agents SDK projects on Bedrock AgentCore (TS/Python) |
-| `agent-eval` | Auto | Evaluate and benchmark AI agent performance |
+| `challenger` | Auto | Adversarial reviewer that stress-tests architecture recommendations |
+| **AWS Services** | | |
 | `lambda` | Auto | Design, build, and optimize Lambda functions — runtimes, cold starts, concurrency |
 | `ec2` | Auto | Design, configure, and optimize EC2 workloads — instance selection, AMIs, ASGs |
 | `ecs` | Auto | Deploy and troubleshoot ECS workloads — task definitions, services, Fargate |
@@ -199,6 +232,7 @@ Hooks run automatically on events. Currently configured:
 | `messaging` | Auto | SQS, SNS, and EventBridge — queue design, fan-out, event routing |
 | `observability` | Auto | CloudWatch, X-Ray, and OpenTelemetry — dashboards, alarms, tracing |
 | `step-functions` | Auto | Step Functions workflows — state machines, error handling, service integrations |
+| **Migration** | | |
 | `gcp-to-aws` | Auto | GCP to AWS migration service mapping, gotchas, and environment assessment |
 | `azure-to-aws` | Auto | Azure to AWS migration service mapping, gotchas, and environment assessment |
 
@@ -247,8 +281,13 @@ sup-virtual-sa/
 │       ├── .claude-plugin/
 │       │   └── plugin.json           # Plugin manifest
 │       ├── .mcp.json                 # MCP server configs (5 servers)
-│       ├── skills/                   # 24 skills
+│       ├── skills/                   # 30 skills
+│       │   ├── aws-plan/             # End-to-end architecture planning
 │       │   ├── aws-architect/        # Architecture design & review
+│       │   ├── aws-compare/          # Side-by-side architecture comparison
+│       │   ├── aws-diagram/          # Architecture diagram generation
+│       │   ├── aws-health-check/     # Quick account health scan
+│       │   ├── aws-migrate/          # Guided migration assessment
 │       │   ├── well-architected/     # Formal WA Framework reviews
 │       │   ├── customer-ideation/    # Idea → AWS architecture workflow
 │       │   ├── iac-scaffold/         # IaC project scaffolding
@@ -257,7 +296,7 @@ sup-virtual-sa/
 │       │   ├── cost-check/           # Cost analysis & optimization
 │       │   ├── bedrock-cost/         # Bedrock pricing & cost modeling
 │       │   ├── strands-agent/        # Strands Agents SDK scaffolding
-│       │   ├── agent-eval/           # AI agent evaluation
+│       │   ├── challenger/           # Adversarial architecture reviewer
 │       │   ├── lambda/               # Lambda functions
 │       │   ├── ec2/                  # EC2 instances
 │       │   ├── ecs/                  # ECS containers

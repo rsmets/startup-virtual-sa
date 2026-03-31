@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is the **aws-dev-toolkit** Claude Code plugin — a comprehensive AWS development toolkit with 25 skills, 11 specialized agents, and 3 MCP servers for building, migrating, and reviewing well-architected applications on AWS.
+This is the **aws-dev-toolkit** Claude Code plugin — a comprehensive AWS development toolkit with 30 skills, 11 specialized agents, and 5 MCP servers for building, migrating, and reviewing well-architected applications on AWS.
 
 ## Repository Structure
 
@@ -11,7 +11,7 @@ sup-virtual-sa/
 ├── plugins/aws-dev-toolkit/       # The plugin
 │   ├── .claude-plugin/plugin.json # Plugin manifest
 │   ├── .mcp.json                  # 5 MCP server configs
-│   ├── skills/                    # 25 skills (each with SKILL.md)
+│   ├── skills/                    # 30 skills (each with SKILL.md)
 │   ├── agents/                    # 11 sub-agents
 │   └── hooks/hooks.json           # Hook definitions
 ├── claude-plugins-official/       # Fork of anthropics/claude-plugins-official (gitignored)
@@ -32,6 +32,22 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) format for all 
 - `test:` adding/updating tests
 
 ## Plugin Development
+
+### Skills = Slash Commands (No Separate `commands/` Directory)
+
+As of Claude Code's current architecture, **custom commands have been merged into skills**. A `commands/deploy.md` and a `skills/deploy/SKILL.md` both create `/deploy` and work identically. The `commands/` directory is legacy — **this plugin uses `skills/` exclusively**, which is the recommended modern pattern.
+
+Why skills over commands:
+- **Supporting files**: skills are directories, so you can include templates, reference docs, and scripts alongside SKILL.md
+- **Auto-invocation**: Claude can invoke skills based on their `description` without the user typing a slash command
+- **Richer frontmatter**: `disable-model-invocation`, `context: fork`, `allowed-tools`, `paths`, `model`, `effort`
+- **Every skill is also a slash command**: `/aws-dev-toolkit:skill-name` works automatically
+
+If you see `commands/` in other plugins or older examples, know that it still works but offers fewer capabilities.
+
+> **Source**: [Claude Code Skills Reference](https://code.claude.com/docs/en/skills) — *"Custom commands have been merged into skills. A file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy` and work the same way. Your existing `.claude/commands/` files keep working. Skills add optional features."*
+
+### Conventions
 
 - Skills go in `plugins/aws-dev-toolkit/skills/<skill-name>/SKILL.md`
 - Agents go in `plugins/aws-dev-toolkit/agents/<agent-name>.md`
