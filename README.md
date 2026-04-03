@@ -5,8 +5,11 @@ A Claude Code plugin for AWS development. Ships 30 skills, 11 sub-agents, 3 MCP 
 ## Quick Start
 
 ```bash
-# Add from the marketplace
-claude plugins add rsmets/aws-dev-toolkit
+# Add the marketplace
+claude plugins marketplace add rsmets/aws-dev-toolkit
+
+# Install the plugin
+claude plugins install aws-dev-toolkit
 ```
 
 Or test locally during development:
