@@ -34,8 +34,9 @@ cdk.out/
 # Plugin data
 *.log
 
-# Claude Code auto memory
+# Claude Code
 MEMORY/
+.claude/
 
 # Forked repos
 claude-plugins-official/
