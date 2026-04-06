@@ -35,7 +35,7 @@ The model choice is the single biggest cost and quality decision. Get this right
 - Start with the smallest model that could work. Upgrade only when evidence shows it falls short.
 - Benchmark on real data, not generic benchmarks. A smaller well-prompted model often beats a larger general one.
 - Use Bedrock's intelligent prompt routing to auto-route requests to the right model tier.
-- Evaluate the Nova family before defaulting to third-party models — it is underrated.
+- Evaluate the Nova family before defaulting to third-party models — Nova Pro offers comparable quality to Claude Sonnet for many tasks at significantly lower cost per token, and Nova Lite/Micro provide sub-100ms latency for classification and routing tasks where you don't need full reasoning capability. Nova models also have no cross-provider data transfer fees and deeper native Bedrock integration (Guardrails, Knowledge Bases, Flows).
 
 ## Bedrock Agents
 
