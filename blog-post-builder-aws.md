@@ -93,17 +93,21 @@ Early versions of the planning skills in `aws-dev-toolkit` dumped 15 surface-lev
 
 The last two categories catch issues that tend to surface late in design. Getting the question flow right matters. Progressive discovery leads to better context and better recommendations than a flat questionnaire.
 
-## Getting Started
+## Try It or Build Your Own
 
-### Prerequisites
+The patterns generalize to any tightly coupled domain: cloud infrastructure, data engineering, platform engineering, compliance.
 
-- [Claude Code](https://code.claude.com) v1.0.33+
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) (for MCP servers via `uvx`)
-- AWS CLI configured with credentials
+1. **Split skills into domain-specific and cross-cutting.** The cross-cutting ones compound fastest.
+2. **Define agents for work that requires composition.** Skills are reference; agents are workers.
+3. **Colocate what composes.** If agents need to call each other, they need to live together.
+4. **Embed guardrails in the workflow.** Don't bolt safety on from the outside.
+5. **Use progressive discovery.** Conversations beat questionnaires.
 
-### Installation
+Start with 3-5 skills that cover your team's most repetitive decisions. Add agents when you find yourself chaining skills manually. Consolidate when the cross-cutting concerns start falling through the cracks.
 
-From within a Claude Session:
+### Try `aws-dev-toolkit`
+
+**Prerequisites:** [Claude Code](https://code.claude.com) v1.0.33+, [uv](https://docs.astral.sh/uv/getting-started/installation/) (for MCP servers via `uvx`), and AWS CLI configured with credentials.
 
 ```bash
 # Add the marketplace
@@ -113,9 +117,7 @@ From within a Claude Session:
 /plugin install aws-dev-toolkit@rsmets
 ```
 
-### Usage
-
-Skills activate automatically based on context. Just ask naturally:
+Skills activate automatically based on context:
 
 ```
 "Design me a serverless API for image processing"     → aws-plan
@@ -135,22 +137,6 @@ Or invoke explicitly:
 /aws-dev-toolkit:strands-agent "Classification agent with Bedrock"
 ```
 
-Full documentation in the [README](https://github.com/rsmets/aws-dev-toolkit).
-
-## Try It or Build Your Own
-
-`aws-dev-toolkit` is at v0.6.0 and [MIT-licensed](https://github.com/rsmets/aws-dev-toolkit). The [PR](https://github.com/awslabs/agent-plugins/pull/107) and [RFC](https://github.com/awslabs/agent-plugins/issues/108) to add it to the official awslabs repo are open.
-
-The patterns generalize to any tightly coupled domain: cloud infrastructure, data engineering, platform engineering, compliance.
-
-1. **Split skills into domain-specific and cross-cutting.** The cross-cutting ones compound fastest.
-2. **Define agents for work that requires composition.** Skills are reference; agents are workers.
-3. **Colocate what composes.** If agents need to call each other, they need to live together.
-4. **Embed guardrails in the workflow.** Don't bolt safety on from the outside.
-5. **Use progressive discovery.** Conversations beat questionnaires.
-
-Start with 3-5 skills that cover your team's most repetitive decisions. Add agents when you find yourself chaining skills manually. Consolidate when the cross-cutting concerns start falling through the cracks.
-
-If you try `aws-dev-toolkit` and something doesn't work, or there's a service skill you want, [open an issue](https://github.com/rsmets/aws-dev-toolkit/issues).
+Full documentation in the [README](https://github.com/rsmets/aws-dev-toolkit). If something doesn't work or there's a service skill you want, [open an issue](https://github.com/rsmets/aws-dev-toolkit/issues).
 
 Thanks for making it this far!
