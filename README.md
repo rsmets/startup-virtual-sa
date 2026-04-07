@@ -339,6 +339,10 @@ The [awslabs/mcp](https://awslabs.github.io/mcp/servers) project provides 60+ of
 | `awslabs.iam-mcp-server` | IAM user, role, and policy management |
 | `awslabs.cost-analysis-mcp-server` | Cost analysis and optimization |
 
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
 ## License
 
-MIT
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
