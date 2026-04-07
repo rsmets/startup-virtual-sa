@@ -8,7 +8,7 @@ I'll use [**aws-dev-toolkit**](https://github.com/rsmets/aws-dev-toolkit), a Cla
 
 A useful distinction when structuring a toolkit: **domain-specific** skills versus **cross-cutting** skills. In `aws-dev-toolkit`, this looks like:
 
-**19 domain-specific skills:** Lambda, DynamoDB, EC2, ECS, EKS, S3, CloudFront, API Gateway, IAM, networking (VPC/subnets/security groups), messaging (SQS/SNS/EventBridge), observability (CloudWatch/X-Ray), Step Functions, Bedrock cost modeling, RDS/Aurora (engine selection, HA topology, Serverless v2, blue/green deployments), AgentCore (Runtime, Memory, Gateway, Identity, Policy, Observability, Evaluations — full platform design for production AI agents), IoT (IoT Core MQTT/shadows/rules engine, Greengrass v2 edge compute, SiteWise, fleet provisioning, device security), MLOps (SageMaker training/inference/pipelines, MLflow on AWS, model monitoring, distributed training, Spot/Inferentia cost optimization), and security review.
+**19 domain-specific skills:** Lambda, DynamoDB, EC2, ECS, EKS, S3, CloudFront, API Gateway, IAM, networking (VPC/subnets/security groups), messaging (SQS/SNS/EventBridge), observability (CloudWatch/X-Ray), Step Functions, Bedrock cost modeling, RDS/Aurora (engine selection, HA topology, Serverless v2, blue/green deployments), AgentCore (Runtime, Memory, Gateway, Identity, Policy, Observability, Evaluations, full platform design for production AI agents), IoT (IoT Core MQTT/shadows/rules engine, Greengrass v2 edge compute, SiteWise, fleet provisioning, device security), MLOps (SageMaker training/inference/pipelines, MLflow on AWS, model monitoring, distributed training, Spot/Inferentia cost optimization), and security review.
 
 **15 cross-cutting skills:** architecture design, side-by-side comparison, debugging, diagram generation, account health checks, migration orchestration, end-to-end planning, GCP-to-AWS and Azure-to-AWS migration, IaC scaffolding (CDK, Terraform, SAM, CloudFormation), Strands Agents SDK scaffolding, Well-Architected reviews, customer ideation, cost analysis, and an adversarial `challenger` that stress-tests recommendations.
 
@@ -104,6 +104,16 @@ The patterns generalize to any tightly coupled domain: cloud infrastructure, dat
 5. **Use progressive discovery.** Conversations beat questionnaires.
 
 Start with 3-5 skills that cover your team's most repetitive decisions. Add agents when you find yourself chaining skills manually. Consolidate when the cross-cutting concerns start falling through the cracks.
+
+### A Note on Token Costs
+
+A reasonable concern: does 34 skills bloat the context window? Not really, because Claude Code only injects skill **names and descriptions** into every conversation, roughly 10KB (~2,500 tokens) for all 34 skills. The full skill content (~318KB across all SKILL.md files) is loaded only when a skill is actually invoked, and reference materials (~310KB more) only when the skill explicitly reads them.
+
+The always-on cost of 34 skills is about the same as a single page of documentation. The deep knowledge (service-specific procedures, reference architectures, decision trees) stays on disk until needed. This is the plugin equivalent of lazy loading: you pay for the index, not the library.
+
+For comparison, a typical CLAUDE.md file runs 2-5KB. The skill index adds roughly one CLAUDE.md worth of context. On a 200K context window that's ~1.2%; on a 1M window it's negligible. The trade-off is worth it: 2,500 tokens of routing information gives the model enough signal to activate any of 34 specialized workflows without the user memorizing slash commands.
+
+If you're building a toolkit and worried about index bloat, keep descriptions under 2-3 sentences each. The trigger phrases ("use when...") matter more than prose. They're what the model pattern-matches against. Verbose descriptions don't improve routing; they just waste tokens.
 
 ### Try `aws-dev-toolkit`
 
